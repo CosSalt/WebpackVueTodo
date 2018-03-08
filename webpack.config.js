@@ -1,6 +1,11 @@
 const path = require('path')
+const HTMLWebpackPlugin = require('html-webpack-plugin')
+const webpack = require('webpack')
+const isDev = process.env.NODE_ENV === 'development'
 
-module.exports = {
+
+const config = {
+  target: 'web',
   entry: path.join(__dirname,'src/index.js'),
   //entry: path.resolve(__dirname,'src/index.js'),
   output:{
@@ -12,6 +17,10 @@ module.exports = {
       {
         test:/\.vue$/,
         loader: 'vue-loader'
+      },
+      {
+        test:/\.jsx$/,
+        loader: 'babel-loader'
       },
       {
         test:/\.css$/,
@@ -26,6 +35,12 @@ module.exports = {
         use:[
           'style-loader',
           'css-loader',
+          {
+            loader:'postcss-loader',
+            options:{
+              sourceMap: true
+            }
+          },
           'stylus-loader'
         ]
       },
@@ -42,5 +57,36 @@ module.exports = {
         ]
       }
     ]
-  }
+  },
+  plugins:[
+    new webpack.DefinePlugin({
+      'process.env':{
+        NODE_ENV: isDev ? '"development"' : '"production"'
+      }
+    }),
+    new HTMLWebpackPlugin()
+  ]
 }
+
+if(isDev){
+  config.devtool = '#cheap-module-eval-source-map'
+  config.devServer = {
+    port: 8000,
+    //host: '0.0.0.0',
+    host: '127.0.0.1',
+    overlay:{
+      errors: true,
+    },
+    //historyFallback:{
+    //},
+    open: true,
+    hot: true
+  }
+  config.plugins.push(
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NoEmitOnErrorsPlugin
+  )
+}
+
+
+module.exports = config
