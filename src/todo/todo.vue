@@ -10,11 +10,13 @@
     >
     <Item 
       :todo="todo"
-      v-for="todo in todos"
+      v-for="todo in filterTodos"
       :key='todo.id'
       @del='delTodo'
     />
-    <Tabs :filter="filter" @toggleFilter='toggleTheFilter'></Tabs>
+    <Tabs :filter="filter" :todosNum="todosNum" @toggleFilter='toggleTheFilter' 
+      @clearCompleted='clearAllCompleted'
+    />
   </section>
 </template>
 
@@ -35,7 +37,17 @@ export default {
   },
   computed:{
     filterTodos(){
-      
+      debugger
+      if(this.filter === 'all'){
+        return this.todos
+      }
+      const completed = this.filter === 'completed'
+      return this.todos.filter(
+        todo => completed === todo.completed
+      )
+    },
+    todosNum(){
+      return this.filterTodos.length
     }
   },
   methods:{
@@ -50,17 +62,22 @@ export default {
       this.willTodo = '';//清空数据
     },
     delTodo(id){
-      var todos = this.todos;
-      for(let i=0; i< todos.length;i++){
-        if(todos[i].id === id){
-          todos.splice(i,1);
-          break;
-        }
+      let todos = this.todos
+      const index = todos.findIndex(item => item.id === id);
+      if(index >=0 ){
+        todos.splice(index, 1)
       }
     },
     toggleTheFilter(state){
       if(!!state){
         this.filter = state
+      }
+    },
+    clearAllCompleted(){
+      if(confirm("确定删除已完成的 todos")){
+        this.todos = this.todos.filter(
+          todo => !todo.completed
+        )
       }
     }
   }
