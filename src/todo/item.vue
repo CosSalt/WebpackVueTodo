@@ -2,11 +2,11 @@
   <div :class="['todo-item',todo.completed ? 'completed' : '']">
     <input
       type="checkbox"
-      class="toggle"
+      class="toggle1"
       v-model="todo.completed"  
-    >
+    />
     <label>{{todo.content}}</label>
-    <button class="destory" @click='deleteTodo'></button>
+    <button class="destory1" @click='deleteTodo'>x</button>
   </div>
 </template>
 
@@ -20,7 +20,7 @@ export default {
   },
   methods:{
     deleteTodo(){
-
+      this.$emit('del',this.todo.id);
     }
   }
 }
@@ -42,7 +42,7 @@ export default {
     word-break break-all
     padding 15px 60px 15px 15px
     margin-left 45px
-    display block
+    //display block
     line-height 1.2
     transition color 0.4s
   }
@@ -57,9 +57,11 @@ export default {
 .toggle{
   text-align center
   height 40px
-  position absolute
+  width 20px
+  /*position absolute
   top 0
   bottom 0
+  */
   margin auto 0
   border none
   appearance none

@@ -5,10 +5,16 @@
       class="add-input"
       autofocus='autofocus'
       placeholder='接下去要做什么？'
+      v-model = 'willTodo'
       @keyup.enter="addTodo"
     >
-    <Item :todo="todo"></Item>
-    <Tabs :filter="filter"></Tabs>
+    <Item 
+      :todo="todo"
+      v-for="todo in todos"
+      :key='todo.id'
+      @del='delTodo'
+    />
+    <Tabs :filter="filter" @toggleFilter='toggleTheFilter'></Tabs>
   </section>
 </template>
 
@@ -21,17 +27,41 @@ export default {
   },
   data(){
     return{
-      todo: {
-        id: 0,
-        content: 'this is a test todo',
-        completed: false
-      },
-      filter: 'all'
+      todos: [],
+      filter: 'all',
+      id: 0,
+      willTodo: '',
+    }
+  },
+  computed:{
+    filterTodos(){
+      
     }
   },
   methods:{
-    addTodo(){
-
+    addTodo(e){
+      debugger;
+      if(!this.willTodo) return;
+      this.todos.unshift({
+        id: this.id++,
+        content: this.willTodo.trim(),
+        completed: false
+      })
+      this.willTodo = '';//清空数据
+    },
+    delTodo(id){
+      var todos = this.todos;
+      for(let i=0; i< todos.length;i++){
+        if(todos[i].id === id){
+          todos.splice(i,1);
+          break;
+        }
+      }
+    },
+    toggleTheFilter(state){
+      if(!!state){
+        this.filter = state
+      }
     }
   }
 }

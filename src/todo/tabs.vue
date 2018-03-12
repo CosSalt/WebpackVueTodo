@@ -6,7 +6,7 @@
         v-for="state in states"
         :key='state'
         :class="[state,filter === state ? 'actived' : '']"
-        @click="toggleFilter(state)"
+        @click="toggleTheFilter(state)"
       >
         {{state}}
       </span>
@@ -29,8 +29,8 @@ export default {
     }
   },
   methods:{
-    toggleFilter(){
-
+    toggleTheFilter(state){
+      this.$emit('toggleFilter', state);
     },
     clearAllCompleted(){
 
